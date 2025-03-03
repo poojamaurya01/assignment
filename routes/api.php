@@ -10,9 +10,11 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware(['auth:sanctum', 'throttle:10,1'])->group(function () {
-    Route::apiResource('articles', ArticleController::class)
-    ->middleware('article.owner')
-    ->except(['index', 'store']);
+    Route::apiResource('articles', ArticleController::class);
+    Route::middleware('article.owner')->group(function () {
+        Route::put('articles/{article}', [ArticleController::class, 'update']);
+        Route::delete('articles/{article}', [ArticleController::class, 'destroy']);
+    });
     Route::post('/encrypt', [EncryptionController::class, 'encryptData']);
     Route::post('/decrypt', [EncryptionController::class, 'decryptData']);
 });
